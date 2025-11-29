@@ -6,11 +6,11 @@
     <title>Memento Mori Widget</title>
     <style>
         :root {
-            --bg-color: #1a1a1a;
+            --bg-color: #191919; /* Matches Notion Dark Mode */
             --text-color: #e0e0e0;
-            --box-empty: #333;
+            --box-empty: #2f2f2f;
             --box-filled: #e0e0e0;
-            --box-current: #ff5252; /* Red specifically for the 'now' */
+            --box-current: #ff5252;
             --accent: #4a90e2;
         }
 
@@ -25,8 +25,8 @@
             padding: 20px;
         }
 
-        h1 { font-size: 1.5rem; margin-bottom: 5px; }
-        p { font-size: 0.9rem; color: #888; margin-bottom: 20px; }
+        h1 { font-size: 1.2rem; margin-bottom: 5px; font-weight: normal; letter-spacing: 2px; }
+        p { font-size: 0.8rem; color: #666; margin-bottom: 20px; }
 
         /* Controls */
         .controls {
@@ -34,124 +34,111 @@
             display: flex;
             gap: 10px;
             align-items: center;
+            font-size: 0.8rem;
         }
 
         input[type="date"] {
-            padding: 8px;
-            background: #333;
-            color: white;
-            border: 1px solid #555;
+            padding: 5px;
+            background: #2f2f2f;
+            color: #ccc;
+            border: 1px solid #444;
             border-radius: 4px;
+            font-family: inherit;
         }
 
         button {
-            padding: 8px 16px;
-            background-color: var(--accent);
-            color: white;
-            border: none;
+            padding: 6px 12px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #444;
             border-radius: 4px;
             cursor: pointer;
-            font-weight: bold;
+            font-family: inherit;
+            font-size: 0.75rem;
+            transition: background 0.2s;
         }
 
-        button:hover { opacity: 0.9; }
+        button:hover { background-color: #444; }
+        button.primary { background-color: var(--accent); border-color: var(--accent); }
 
         /* The Grid */
         .life-grid {
             display: flex;
             flex-wrap: wrap;
             width: 100%;
-            max-width: 800px; /* Adjust for density */
-            gap: 4px;
+            max-width: 720px; 
+            gap: 3px;
+            justify-content: flex-start;
         }
 
         .week-box {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background-color: var(--box-empty);
             border-radius: 1px;
-            transition: all 0.3s ease;
         }
 
         .week-box.filled { background-color: var(--box-filled); }
         
         .week-box.current { 
             background-color: var(--box-current); 
-            box-shadow: 0 0 5px var(--box-current);
-            animation: pulse 2s infinite;
+            box-shadow: 0 0 4px var(--box-current);
         }
 
         .stats {
             margin-top: 20px;
-            font-size: 0.85rem;
-            color: #888;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+            font-size: 0.75rem;
+            color: #555;
+            text-align: center;
+            line-height: 1.4;
         }
     </style>
 </head>
 <body>
 
     <h1>MEMENTO MORI</h1>
-    <p>Your life in weeks.</p>
+    <div id="subtitle-container">
+        <p>Target: 80 Years</p>
+    </div>
 
     <div class="controls" id="setup-panel">
-        <label>Enter Birthdate: </label>
+        <label>Birth Date: </label>
         <input type="date" id="birthdate-input">
-        <button onclick="saveDate()">Start Tracking</button>
+        <button class="primary" onclick="saveDate()">Start</button>
     </div>
 
     <div class="controls" id="action-panel" style="display:none;">
-        <button onclick="markWeekDone()">Mark This Week Complete</button>
-        <button onclick="resetData()" style="background-color: #555; font-size: 0.8rem;">Reset</button>
+        <button class="primary" onclick="markWeekDone()">Mark Week Done</button>
+        <button onclick="resetData()">Reset</button>
     </div>
 
     <div class="life-grid" id="grid"></div>
-
     <div class="stats" id="stats-display"></div>
 
     <script>
-        const LIFESPAN_YEARS = 80; // Standard Stoic measure
-        const TOTAL_WEEKS = LIFESPAN_YEARS * 52;
+        const TARGET_AGE = 80;
         const gridContainer = document.getElementById('grid');
         const setupPanel = document.getElementById('setup-panel');
         const actionPanel = document.getElementById('action-panel');
         const statsDisplay = document.getElementById('stats-display');
+        const subtitle = document.getElementById('subtitle-container');
 
-        // Check for saved data on load
         window.onload = function() {
             const savedDob = localStorage.getItem('memento_dob');
             if (savedDob) {
                 renderCalendar(savedDob);
-            } else {
-                // Initialize empty grid for aesthetics
-                renderEmptyGrid();
             }
         };
-
-        function renderEmptyGrid() {
-            gridContainer.innerHTML = '';
-            for (let i = 0; i < TOTAL_WEEKS; i++) {
-                const box = document.createElement('div');
-                box.className = 'week-box';
-                gridContainer.appendChild(box);
-            }
-        }
 
         function saveDate() {
             const dob = document.getElementById('birthdate-input').value;
             if (!dob) return alert("Please enter a valid date.");
-            
             localStorage.setItem('memento_dob', dob);
             renderCalendar(dob);
         }
 
         function resetData() {
-            if(confirm("Reset your birthdate?")) {
+            if(confirm("Reset date?")) {
                 localStorage.clear();
                 location.reload();
             }
@@ -161,44 +148,57 @@
             setupPanel.style.display = 'none';
             actionPanel.style.display = 'flex';
             
-            const dob = new Date(dobString);
+            const dob = new Date(dobString + "T00:00:00"); // Fix timezone issues
             const today = new Date();
             
-            // Calculate weeks lived
+            // Calculate EXACT 80th Birthday
+            const deathDate = new Date(dob);
+            deathDate.setFullYear(dob.getFullYear() + TARGET_AGE);
+
+            // Calculate precise week counts
             const oneWeek = 1000 * 60 * 60 * 24 * 7;
-            const diffTime = Math.abs(today - dob);
-            const weeksLived = Math.floor(diffTime / oneWeek);
+            const totalLifeTime = deathDate - dob;
+            const timeLived = today - dob;
+
+            // Total weeks in exactly 80 years (approx 4174 due to leap years)
+            const totalWeeks = Math.floor(totalLifeTime / oneWeek);
+            const weeksLived = Math.floor(timeLived / oneWeek);
             
-            // Percentage
-            const percentage = ((weeksLived / TOTAL_WEEKS) * 100).toFixed(1);
+            const percentage = ((weeksLived / totalWeeks) * 100).toFixed(2);
 
+            // Update Text
+            subtitle.innerHTML = `<p>${dob.toDateString()} — ${deathDate.toDateString()}</p>`;
+
+            // Render Grid
             gridContainer.innerHTML = '';
+            
+            // Fragment for performance
+            const fragment = document.createDocumentFragment();
 
-            for (let i = 0; i < TOTAL_WEEKS; i++) {
+            for (let i = 0; i < totalWeeks; i++) {
                 const box = document.createElement('div');
                 box.className = 'week-box';
 
                 if (i < weeksLived) {
                     box.classList.add('filled');
-                    box.title = `Week ${i + 1} (Passed)`;
                 } else if (i === weeksLived) {
                     box.classList.add('current');
-                    box.title = `Current Week`;
                 }
                 
-                gridContainer.appendChild(box);
+                fragment.appendChild(box);
             }
+            gridContainer.appendChild(fragment);
 
-            statsDisplay.innerHTML = `Lived: ${weeksLived} weeks | Remaining: ${TOTAL_WEEKS - weeksLived} weeks | ${percentage}% Complete`;
+            statsDisplay.innerHTML = `
+                ${weeksLived.toLocaleString()} weeks lived<br>
+                ${(totalWeeks - weeksLived).toLocaleString()} weeks remaining<br>
+                ${percentage}% complete
+            `;
         }
 
         function markWeekDone() {
-            // Visual feedback interaction
-            alert("Week marked complete. Make the next one count.");
-            // In a real app, this would log a specific entry. 
-            // Here, it refreshes the calc because 'now' is always moving.
-            const savedDob = localStorage.getItem('memento_dob');
-            renderCalendar(savedDob);
+            alert("Week marked complete.");
+            location.reload(); 
         }
     </script>
 </body>
