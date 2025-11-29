@@ -6,8 +6,8 @@
     <title>Memento Mori Widget</title>
     <style>
         :root {
-            --bg-color: #191919; /* Matches Notion Dark Mode */
-            --text-color: #e0e0e0;
+            --bg-color: #191919; 
+            --text-color: #ffffff; /* Changed to White */
             --box-empty: #2f2f2f;
             --box-filled: #e0e0e0;
             --box-current: #ff5252;
@@ -25,8 +25,22 @@
             padding: 20px;
         }
 
-        h1 { font-size: 1.2rem; margin-bottom: 5px; font-weight: normal; letter-spacing: 2px; }
-        p { font-size: 0.8rem; color: #666; margin-bottom: 20px; }
+        h1 { 
+            font-size: 1.5rem; 
+            margin-bottom: 5px; 
+            font-weight: 800; /* Bold */
+            letter-spacing: 3px; 
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        /* Subtitle (Dates) */
+        p { 
+            font-size: 0.85rem; 
+            color: #ffffff; /* White */
+            margin-bottom: 20px; 
+            opacity: 0.9;
+        }
 
         /* Controls */
         .controls {
@@ -40,21 +54,22 @@
         input[type="date"] {
             padding: 5px;
             background: #2f2f2f;
-            color: #ccc;
+            color: #fff;
             border: 1px solid #444;
             border-radius: 4px;
             font-family: inherit;
         }
 
         button {
-            padding: 6px 12px;
+            padding: 6px 15px;
             background-color: #333;
             color: #fff;
             border: 1px solid #444;
             border-radius: 4px;
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
+            font-weight: bold;
             transition: background 0.2s;
         }
 
@@ -82,21 +97,23 @@
         
         .week-box.current { 
             background-color: var(--box-current); 
-            box-shadow: 0 0 4px var(--box-current);
+            box-shadow: 0 0 5px var(--box-current);
         }
 
+        /* Bottom Stats */
         .stats {
-            margin-top: 20px;
-            font-size: 0.75rem;
-            color: #555;
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: #ffffff; /* White */
             text-align: center;
-            line-height: 1.4;
+            line-height: 1.6;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
 
-    <h1>MEMENTO MORI</h1>
+    <h1>Memento Mori</h1>
     <div id="subtitle-container">
         <p>Target: 80 Years</p>
     </div>
@@ -148,31 +165,25 @@
             setupPanel.style.display = 'none';
             actionPanel.style.display = 'flex';
             
-            const dob = new Date(dobString + "T00:00:00"); // Fix timezone issues
+            const dob = new Date(dobString + "T00:00:00"); 
             const today = new Date();
             
-            // Calculate EXACT 80th Birthday
             const deathDate = new Date(dob);
             deathDate.setFullYear(dob.getFullYear() + TARGET_AGE);
 
-            // Calculate precise week counts
             const oneWeek = 1000 * 60 * 60 * 24 * 7;
             const totalLifeTime = deathDate - dob;
             const timeLived = today - dob;
 
-            // Total weeks in exactly 80 years (approx 4174 due to leap years)
             const totalWeeks = Math.floor(totalLifeTime / oneWeek);
             const weeksLived = Math.floor(timeLived / oneWeek);
             
             const percentage = ((weeksLived / totalWeeks) * 100).toFixed(2);
 
-            // Update Text
             subtitle.innerHTML = `<p>${dob.toDateString()} — ${deathDate.toDateString()}</p>`;
 
-            // Render Grid
             gridContainer.innerHTML = '';
             
-            // Fragment for performance
             const fragment = document.createDocumentFragment();
 
             for (let i = 0; i < totalWeeks; i++) {
