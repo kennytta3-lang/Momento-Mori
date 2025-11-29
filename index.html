@@ -14,23 +14,32 @@
             --accent: #4a90e2;
         }
 
+        /* This is the magic part: 
+           It sets the body to use 100% of the widget height 
+           and organizes content in a vertical column.
+        */
         body {
             font-family: 'Courier New', Courier, monospace;
             background-color: var(--bg-color);
             color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+            height: 100vh; /* Full Height of the Notion Block */
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center; /* Vertically center everything */
-            margin: 0;
-            padding: 10px;
-            height: 100vh; /* Use full height of the window */
-            box-sizing: border-box;
+            overflow: hidden; /* Prevents double scrollbars */
+        }
+
+        /* Header Section (Fixed at Top) */
+        header {
+            flex-shrink: 0; /* Don't let this shrink */
+            text-align: center;
         }
 
         h1 { 
             font-size: 1.5rem; 
-            margin: 0 0 5px 0; /* Minimal margin */
+            margin: 0 0 5px 0; 
             font-weight: 800; 
             letter-spacing: 3px; 
             color: #ffffff;
@@ -43,12 +52,13 @@
             margin: 0 0 15px 0; 
         }
 
-        /* Controls */
+        /* Controls (Fixed at Top) */
         .controls {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             display: flex;
             gap: 10px;
-            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
         input[type="date"] {
@@ -77,19 +87,31 @@
         button:hover { background-color: #444; }
         button.primary { background-color: var(--accent); border-color: var(--accent); }
 
-        /* The Grid - BALANCED */
+        /* The Grid (Flexible Middle) 
+           It grows to fill available space (flex: 1)
+           It scrolls internally if the window is too short (overflow-y: auto)
+        */
+        .life-grid-container {
+            flex: 1; 
+            overflow-y: auto; 
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Start grid from top */
+            padding-right: 5px; /* Room for scrollbar */
+        }
+
         .life-grid {
             display: flex;
             flex-wrap: wrap;
             width: 100%;
-            /* Removed the max-width restriction so it fills the embed */
             gap: 3px; 
             justify-content: center; 
             align-content: flex-start;
         }
 
         .week-box {
-            width: 7px; /* 7px is the sweet spot between 5px and 11px */
+            width: 7px; 
             height: 7px; 
             background-color: var(--box-empty);
             border-radius: 1px;
@@ -97,123 +119,4 @@
 
         .week-box.filled { background-color: var(--box-filled); }
         
-        .week-box.current { 
-            background-color: var(--box-current); 
-            box-shadow: 0 0 4px var(--box-current);
-        }
-
-        /* Bottom Stats */
-        .stats {
-            margin-top: 15px;
-            font-size: 0.85rem;
-            color: #ffffff;
-            text-align: center;
-            line-height: 1.4;
-            opacity: 0.9;
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
-
-    <h1>Memento Mori</h1>
-    <div id="subtitle-container">
-        <p>Target: 80 Years</p>
-    </div>
-
-    <div class="controls" id="setup-panel">
-        <label>Birth Date: </label>
-        <input type="date" id="birthdate-input">
-        <button class="primary" onclick="saveDate()">Start</button>
-    </div>
-
-    <div class="controls" id="action-panel" style="display:none;">
-        <button class="primary" onclick="markWeekDone()">Mark Week Done</button>
-        <button onclick="resetData()">Reset</button>
-    </div>
-
-    <div class="life-grid" id="grid"></div>
-    <div class="stats" id="stats-display"></div>
-
-    <script>
-        const TARGET_AGE = 80;
-        const gridContainer = document.getElementById('grid');
-        const setupPanel = document.getElementById('setup-panel');
-        const actionPanel = document.getElementById('action-panel');
-        const statsDisplay = document.getElementById('stats-display');
-        const subtitle = document.getElementById('subtitle-container');
-
-        window.onload = function() {
-            const savedDob = localStorage.getItem('memento_dob');
-            if (savedDob) {
-                renderCalendar(savedDob);
-            }
-        };
-
-        function saveDate() {
-            const dob = document.getElementById('birthdate-input').value;
-            if (!dob) return alert("Please enter a valid date.");
-            localStorage.setItem('memento_dob', dob);
-            renderCalendar(dob);
-        }
-
-        function resetData() {
-            if(confirm("Reset date?")) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
-
-        function renderCalendar(dobString) {
-            setupPanel.style.display = 'none';
-            actionPanel.style.display = 'flex';
-            
-            const dob = new Date(dobString + "T00:00:00"); 
-            const today = new Date();
-            
-            const deathDate = new Date(dob);
-            deathDate.setFullYear(dob.getFullYear() + TARGET_AGE);
-
-            const oneWeek = 1000 * 60 * 60 * 24 * 7;
-            const totalLifeTime = deathDate - dob;
-            const timeLived = today - dob;
-
-            const totalWeeks = Math.floor(totalLifeTime / oneWeek);
-            const weeksLived = Math.floor(timeLived / oneWeek);
-            
-            const percentage = ((weeksLived / totalWeeks) * 100).toFixed(2);
-
-            subtitle.innerHTML = `<p>${dob.toDateString()} — ${deathDate.toDateString()}</p>`;
-
-            gridContainer.innerHTML = '';
-            
-            const fragment = document.createDocumentFragment();
-
-            for (let i = 0; i < totalWeeks; i++) {
-                const box = document.createElement('div');
-                box.className = 'week-box';
-
-                if (i < weeksLived) {
-                    box.classList.add('filled');
-                } else if (i === weeksLived) {
-                    box.classList.add('current');
-                }
-                
-                fragment.appendChild(box);
-            }
-            gridContainer.appendChild(fragment);
-
-            statsDisplay.innerHTML = `
-                ${weeksLived.toLocaleString()} weeks lived | 
-                ${(totalWeeks - weeksLived).toLocaleString()} remaining | 
-                ${percentage}% complete
-            `;
-        }
-
-        function markWeekDone() {
-            alert("Week marked complete.");
-            location.reload(); 
-        }
-    </script>
-</body>
-</html>
+        .week
