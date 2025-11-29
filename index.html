@@ -7,7 +7,7 @@
     <style>
         :root {
             --bg-color: #191919; 
-            --text-color: #ffffff; /* Changed to White */
+            --text-color: #ffffff;
             --box-empty: #2f2f2f;
             --box-filled: #e0e0e0;
             --box-current: #ff5252;
@@ -26,49 +26,48 @@
         }
 
         h1 { 
-            font-size: 1.5rem; 
-            margin-bottom: 5px; 
-            font-weight: 800; /* Bold */
-            letter-spacing: 3px; 
+            font-size: 2rem; /* Larger Title */
+            margin-bottom: 10px; 
+            font-weight: 800; 
+            letter-spacing: 4px; 
             color: #ffffff;
             text-transform: uppercase;
         }
 
-        /* Subtitle (Dates) */
         p { 
-            font-size: 0.85rem; 
-            color: #ffffff; /* White */
-            margin-bottom: 20px; 
+            font-size: 1rem; /* Larger Date Text */
+            color: #ffffff; 
+            margin-bottom: 25px; 
             opacity: 0.9;
         }
 
         /* Controls */
         .controls {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             display: flex;
-            gap: 10px;
+            gap: 15px;
             align-items: center;
-            font-size: 0.8rem;
         }
 
         input[type="date"] {
-            padding: 5px;
+            padding: 8px;
             background: #2f2f2f;
             color: #fff;
             border: 1px solid #444;
             border-radius: 4px;
             font-family: inherit;
+            font-size: 0.9rem;
         }
 
         button {
-            padding: 6px 15px;
+            padding: 8px 20px;
             background-color: #333;
             color: #fff;
             border: 1px solid #444;
             border-radius: 4px;
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: bold;
             transition: background 0.2s;
         }
@@ -76,35 +75,35 @@
         button:hover { background-color: #444; }
         button.primary { background-color: var(--accent); border-color: var(--accent); }
 
-        /* The Grid */
+        /* The Grid - UPSCALED */
         .life-grid {
             display: flex;
             flex-wrap: wrap;
             width: 100%;
-            max-width: 720px; 
-            gap: 3px;
-            justify-content: flex-start;
+            max-width: 950px; /* Allow it to get wider */
+            gap: 5px; /* More breathing room */
+            justify-content: center; /* Centered visually */
         }
 
         .week-box {
-            width: 6px;
-            height: 6px;
+            width: 11px; /* Increased from 6px to 11px */
+            height: 11px; /* Increased from 6px to 11px */
             background-color: var(--box-empty);
-            border-radius: 1px;
+            border-radius: 2px;
         }
 
         .week-box.filled { background-color: var(--box-filled); }
         
         .week-box.current { 
             background-color: var(--box-current); 
-            box-shadow: 0 0 5px var(--box-current);
+            box-shadow: 0 0 6px var(--box-current);
         }
 
         /* Bottom Stats */
         .stats {
-            margin-top: 25px;
-            font-size: 0.85rem;
-            color: #ffffff; /* White */
+            margin-top: 30px;
+            font-size: 1rem;
+            color: #ffffff;
             text-align: center;
             line-height: 1.6;
             font-weight: 500;
