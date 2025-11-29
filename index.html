@@ -21,13 +21,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center; /* Vertically center everything */
             margin: 0;
-            padding: 10px; /* Reduced padding */
+            padding: 10px;
+            height: 100vh; /* Use full height of the window */
+            box-sizing: border-box;
         }
 
         h1 { 
-            font-size: 1.4rem; 
-            margin-bottom: 2px; /* Tight margin */
+            font-size: 1.5rem; 
+            margin: 0 0 5px 0; /* Minimal margin */
             font-weight: 800; 
             letter-spacing: 3px; 
             color: #ffffff;
@@ -35,22 +38,21 @@
         }
 
         p { 
-            font-size: 0.8rem; 
+            font-size: 0.85rem; 
             color: #ccc; 
-            margin-top: 0;
-            margin-bottom: 10px; /* Tight margin */
+            margin: 0 0 15px 0; 
         }
 
         /* Controls */
         .controls {
-            margin-bottom: 10px; /* Tight margin */
+            margin-bottom: 15px;
             display: flex;
             gap: 10px;
             align-items: center;
         }
 
         input[type="date"] {
-            padding: 4px;
+            padding: 5px;
             background: #2f2f2f;
             color: #fff;
             border: 1px solid #444;
@@ -60,14 +62,14 @@
         }
 
         button {
-            padding: 4px 12px;
+            padding: 5px 15px;
             background-color: #333;
             color: #fff;
             border: 1px solid #444;
             border-radius: 4px;
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.75rem; /* Smaller text */
+            font-size: 0.8rem;
             font-weight: bold;
             transition: background 0.2s;
         }
@@ -75,19 +77,20 @@
         button:hover { background-color: #444; }
         button.primary { background-color: var(--accent); border-color: var(--accent); }
 
-        /* The Grid - COMPACT MODE */
+        /* The Grid - BALANCED */
         .life-grid {
             display: flex;
             flex-wrap: wrap;
             width: 100%;
-            max-width: 850px; 
-            gap: 2px; /* Very tight gap */
+            /* Removed the max-width restriction so it fills the embed */
+            gap: 3px; 
             justify-content: center; 
+            align-content: flex-start;
         }
 
         .week-box {
-            width: 5px; /* Small, dense dots */
-            height: 5px; 
+            width: 7px; /* 7px is the sweet spot between 5px and 11px */
+            height: 7px; 
             background-color: var(--box-empty);
             border-radius: 1px;
         }
@@ -101,12 +104,13 @@
 
         /* Bottom Stats */
         .stats {
-            margin-top: 10px; /* Tight margin */
-            font-size: 0.8rem;
+            margin-top: 15px;
+            font-size: 0.85rem;
             color: #ffffff;
             text-align: center;
             line-height: 1.4;
-            opacity: 0.8;
+            opacity: 0.9;
+            width: 100%;
         }
     </style>
 </head>
