@@ -119,4 +119,135 @@
 
         .week-box.filled { background-color: var(--box-filled); }
         
-        .week
+        .week-box.current { 
+            background-color: var(--box-current); 
+            box-shadow: 0 0 4px var(--box-current);
+        }
+
+        /* Custom Scrollbar styling for Webkit (Chrome/Safari) */
+        .life-grid-container::-webkit-scrollbar { width: 8px; }
+        .life-grid-container::-webkit-scrollbar-track { background: #191919; }
+        .life-grid-container::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        .life-grid-container::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Bottom Stats (Fixed at Bottom) */
+        .stats {
+            flex-shrink: 0; /* Don't let this shrink */
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #333; /* subtle separator */
+            font-size: 0.85rem;
+            color: #ffffff;
+            text-align: center;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Memento Mori</h1>
+        <div id="subtitle-container">
+            <p>Target: 80 Years</p>
+        </div>
+    </header>
+
+    <div class="controls" id="setup-panel">
+        <label>Birth Date: </label>
+        <input type="date" id="birthdate-input">
+        <button class="primary" onclick="saveDate()">Start</button>
+    </div>
+
+    <div class="controls" id="action-panel" style="display:none;">
+        <button class="primary" onclick="markWeekDone()">Mark Week Done</button>
+        <button onclick="resetData()">Reset</button>
+    </div>
+
+    <div class="life-grid-container">
+        <div class="life-grid" id="grid"></div>
+    </div>
+
+    <div class="stats" id="stats-display"></div>
+
+    <script>
+        const TARGET_AGE = 80;
+        const gridContainer = document.getElementById('grid');
+        const setupPanel = document.getElementById('setup-panel');
+        const actionPanel = document.getElementById('action-panel');
+        const statsDisplay = document.getElementById('stats-display');
+        const subtitle = document.getElementById('subtitle-container');
+
+        window.onload = function() {
+            const savedDob = localStorage.getItem('memento_dob');
+            if (savedDob) {
+                renderCalendar(savedDob);
+            }
+        };
+
+        function saveDate() {
+            const dob = document.getElementById('birthdate-input').value;
+            if (!dob) return alert("Please enter a valid date.");
+            localStorage.setItem('memento_dob', dob);
+            renderCalendar(dob);
+        }
+
+        function resetData() {
+            if(confirm("Reset date?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function renderCalendar(dobString) {
+            setupPanel.style.display = 'none';
+            actionPanel.style.display = 'flex';
+            
+            const dob = new Date(dobString + "T00:00:00"); 
+            const today = new Date();
+            
+            const deathDate = new Date(dob);
+            deathDate.setFullYear(dob.getFullYear() + TARGET_AGE);
+
+            const oneWeek = 1000 * 60 * 60 * 24 * 7;
+            const totalLifeTime = deathDate - dob;
+            const timeLived = today - dob;
+
+            const totalWeeks = Math.floor(totalLifeTime / oneWeek);
+            const weeksLived = Math.floor(timeLived / oneWeek);
+            
+            const percentage = ((weeksLived / totalWeeks) * 100).toFixed(2);
+
+            subtitle.innerHTML = `<p>${dob.toDateString()} — ${deathDate.toDateString()}</p>`;
+
+            gridContainer.innerHTML = '';
+            
+            const fragment = document.createDocumentFragment();
+
+            for (let i = 0; i < totalWeeks; i++) {
+                const box = document.createElement('div');
+                box.className = 'week-box';
+
+                if (i < weeksLived) {
+                    box.classList.add('filled');
+                } else if (i === weeksLived) {
+                    box.classList.add('current');
+                }
+                
+                fragment.appendChild(box);
+            }
+            gridContainer.appendChild(fragment);
+
+            statsDisplay.innerHTML = `
+                ${weeksLived.toLocaleString()} weeks lived | 
+                ${(totalWeeks - weeksLived).toLocaleString()} remaining | 
+                ${percentage}% complete
+            `;
+        }
+
+        function markWeekDone() {
+            alert("Week marked complete.");
+            location.reload(); 
+        }
+    </script>
+</body>
+</html>
