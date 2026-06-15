@@ -1,216 +1,429 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memento Mori Widget</title>
-    <style>
-        :root {
-            --bg-color: #191919; 
-            --text-color: #ffffff; /* Changed to White */
-            --box-empty: #2f2f2f;
-            --box-filled: #e0e0e0;
-            --box-current: #ff5252;
-            --accent: #4a90e2;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Memento Mori</title>
+<style>
+  :root {
+    --bg: #0b0b0d;
+    --panel: #131318;
+    --panel-2: #1b1b22;
+    --border: #2a2a33;
+    --text: #e8e8ec;
+    --muted: #8a8a96;
+    --lived: #c9c9d4;     /* weeks already lived */
+    --current: #ff4d4d;   /* the week you are in now */
+    --future: #2b2b34;    /* weeks yet to come */
+    --year-line: #3a3a45; /* every 10 years marker */
+    --accent: #ff4d4d;
+    --radius: 14px;
+    --font-mono: "SFMono-Regular", "JetBrains Mono", "Fira Code", ui-monospace, Menlo, Consolas, monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+  }
 
-        body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 20px;
-        }
+  * { box-sizing: border-box; }
 
-        h1 { 
-            font-size: 1.5rem; 
-            margin-bottom: 5px; 
-            font-weight: 800; /* Bold */
-            letter-spacing: 3px; 
-            color: #ffffff;
-            text-transform: uppercase;
-        }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
 
-        /* Subtitle (Dates) */
-        p { 
-            font-size: 0.85rem; 
-            color: #ffffff; /* White */
-            margin-bottom: 20px; 
-            opacity: 0.9;
-        }
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 28px 24px 40px;
+  }
 
-        /* Controls */
-        .controls {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            font-size: 0.8rem;
-        }
+  /* ---------- Header ---------- */
+  header.title {
+    text-align: center;
+    margin-bottom: 22px;
+  }
+  header.title h1 {
+    font-family: var(--font-mono);
+    letter-spacing: 0.42em;
+    font-size: clamp(20px, 3vw, 30px);
+    font-weight: 600;
+    margin: 0 0 6px;
+    text-indent: 0.42em;
+  }
+  header.title p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
 
-        input[type="date"] {
-            padding: 5px;
-            background: #2f2f2f;
-            color: #fff;
-            border: 1px solid #444;
-            border-radius: 4px;
-            font-family: inherit;
-        }
+  /* ---------- Controls ---------- */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: flex-end;
+    justify-content: center;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 22px;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .field label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .field input {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 9px;
+    padding: 9px 11px;
+    font-size: 14px;
+    font-family: var(--font-sans);
+    color-scheme: dark;
+    outline: none;
+    transition: border-color .15s ease;
+  }
+  .field input:focus { border-color: var(--accent); }
+  .field input[type="number"] { width: 92px; }
 
-        button {
-            padding: 6px 15px;
-            background-color: #333;
-            color: #fff;
-            border: 1px solid #444;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.8rem;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
+  /* ---------- Stats ---------- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+  .stat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .stat .num {
+    font-family: var(--font-mono);
+    font-size: clamp(20px, 2.6vw, 28px);
+    font-weight: 600;
+    line-height: 1.1;
+  }
+  .stat .num.accent { color: var(--accent); }
+  .stat .lbl {
+    margin-top: 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
 
-        button:hover { background-color: #444; }
-        button.primary { background-color: var(--accent); border-color: var(--accent); }
+  /* ---------- Progress bar ---------- */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 26px;
+  }
+  .bar {
+    flex: 1;
+    height: 10px;
+    background: var(--future);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .bar > span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--lived), #ffffff);
+    border-radius: 99px;
+    transition: width .4s ease;
+  }
+  .progress-row .pct {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+    min-width: 92px;
+    text-align: right;
+  }
 
-        /* The Grid */
-        .life-grid {
-            display: flex;
-            flex-wrap: wrap;
-            width: 100%;
-            max-width: 720px; 
-            gap: 3px;
-            justify-content: flex-start;
-        }
+  /* ---------- Grid ---------- */
+  .grid-shell {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 22px 18px;
+  }
+  .grid-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+  }
+  .grid-head .cap {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .legend i {
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+  .dot-lived { background: var(--lived); }
+  .dot-current { background: var(--current); }
+  .dot-future { background: var(--future); border: 1px solid var(--border); }
 
-        .week-box {
-            width: 8px;
-            height: 8px;
-            background-color: var(--box-empty);
-            border-radius: 1px;
-        }
+  /* The actual weeks grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(52, 1fr);
+    gap: 3px;
+    width: 100%;
+  }
+  .cell {
+    aspect-ratio: 1 / 1;
+    border-radius: 2px;
+    background: var(--future);
+    transition: transform .08s ease;
+  }
+  .cell.lived { background: var(--lived); }
+  .cell.current {
+    background: var(--current);
+    box-shadow: 0 0 0 2px rgba(255,77,77,.35);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  .cell.decade { box-shadow: inset 0 0 0 1px var(--year-line); }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.35); opacity: .75; }
+  }
 
-        .week-box.filled { background-color: var(--box-filled); }
-        
-        .week-box.current { 
-            background-color: var(--box-current); 
-            box-shadow: 0 0 5px var(--box-current);
-        }
+  .grid-foot {
+    margin-top: 16px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .grid-foot b { color: var(--text); font-weight: 600; }
 
-        /* Bottom Stats */
-        .stats {
-            margin-top: 25px;
-            font-size: 0.85rem;
-            color: #ffffff; /* White */
-            text-align: center;
-            line-height: 1.6;
-            font-weight: 500;
-        }
-    </style>
+  .axis-note {
+    margin-top: 4px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+  }
+
+  @media (max-width: 640px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .grid { gap: 2px; }
+  }
+</style>
 </head>
 <body>
+  <div class="wrap">
+    <header class="title">
+      <h1>MEMENTO MORI</h1>
+      <p id="subtitle">A life of weeks. Make them count.</p>
+    </header>
 
-    <h1>Memento Mori</h1>
-    <div id="subtitle-container">
-        <p>Target: 80 Years</p>
+    <section class="controls">
+      <div class="field">
+        <label for="birthday">Birthday</label>
+        <input type="date" id="birthday" />
+      </div>
+      <div class="field">
+        <label for="lifespan">Years to live</label>
+        <input type="number" id="lifespan" min="1" max="120" value="80" />
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="stat">
+        <div class="num" id="stat-age">—</div>
+        <div class="lbl">Current age</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="stat-lived">—</div>
+        <div class="lbl">Weeks lived</div>
+      </div>
+      <div class="stat">
+        <div class="num accent" id="stat-left">—</div>
+        <div class="lbl">Weeks remaining</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="stat-pct">—</div>
+        <div class="lbl">Life completed</div>
+      </div>
+    </section>
+
+    <div class="progress-row">
+      <div class="bar"><span id="bar-fill" style="width:0%"></span></div>
+      <div class="pct" id="bar-pct">0%</div>
     </div>
 
-    <div class="controls" id="setup-panel">
-        <label>Birth Date: </label>
-        <input type="date" id="birthdate-input">
-        <button class="primary" onclick="saveDate()">Start</button>
-    </div>
+    <section class="grid-shell">
+      <div class="grid-head">
+        <span class="cap">1 row = 1 year · 1 square = 1 week</span>
+        <div class="legend">
+          <span><i class="dot-lived"></i>Lived</span>
+          <span><i class="dot-current"></i>This week</span>
+          <span><i class="dot-future"></i>Remaining</span>
+        </div>
+      </div>
+      <div class="grid" id="grid" role="img" aria-label="Weeks of life grid"></div>
+      <div class="axis-note">← 52 weeks per year →</div>
+      <div class="grid-foot" id="foot">Enter your birthday to begin.</div>
+    </section>
+  </div>
 
-    <div class="controls" id="action-panel" style="display:none;">
-        <button class="primary" onclick="markWeekDone()">Mark Week Done</button>
-        <button onclick="resetData()">Reset</button>
-    </div>
+<script>
+(function () {
+  const WEEKS_PER_YEAR = 52;
+  const MS_PER_WEEK = 1000 * 60 * 60 * 24 * 7;
+  const STORE_KEY = "mementoMori.v1";
 
-    <div class="life-grid" id="grid"></div>
-    <div class="stats" id="stats-display"></div>
+  const els = {
+    birthday: document.getElementById("birthday"),
+    lifespan: document.getElementById("lifespan"),
+    grid: document.getElementById("grid"),
+    age: document.getElementById("stat-age"),
+    lived: document.getElementById("stat-lived"),
+    left: document.getElementById("stat-left"),
+    pct: document.getElementById("stat-pct"),
+    barFill: document.getElementById("bar-fill"),
+    barPct: document.getElementById("bar-pct"),
+    foot: document.getElementById("foot"),
+    subtitle: document.getElementById("subtitle"),
+  };
 
-    <script>
-        const TARGET_AGE = 80;
-        const gridContainer = document.getElementById('grid');
-        const setupPanel = document.getElementById('setup-panel');
-        const actionPanel = document.getElementById('action-panel');
-        const statsDisplay = document.getElementById('stats-display');
-        const subtitle = document.getElementById('subtitle-container');
+  const fmt = (n) => n.toLocaleString("en-US");
 
-        window.onload = function() {
-            const savedDob = localStorage.getItem('memento_dob');
-            if (savedDob) {
-                renderCalendar(savedDob);
-            }
-        };
+  function load() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
+      if (saved.birthday) els.birthday.value = saved.birthday;
+      if (saved.lifespan) els.lifespan.value = saved.lifespan;
+    } catch (_) {}
+  }
 
-        function saveDate() {
-            const dob = document.getElementById('birthdate-input').value;
-            if (!dob) return alert("Please enter a valid date.");
-            localStorage.setItem('memento_dob', dob);
-            renderCalendar(dob);
-        }
+  function save() {
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      birthday: els.birthday.value,
+      lifespan: els.lifespan.value,
+    }));
+  }
 
-        function resetData() {
-            if(confirm("Reset date?")) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
+  function render() {
+    const bday = els.birthday.value ? new Date(els.birthday.value + "T00:00:00") : null;
+    let years = parseInt(els.lifespan.value, 10);
+    if (isNaN(years) || years < 1) years = 80;
 
-        function renderCalendar(dobString) {
-            setupPanel.style.display = 'none';
-            actionPanel.style.display = 'flex';
-            
-            const dob = new Date(dobString + "T00:00:00"); 
-            const today = new Date();
-            
-            const deathDate = new Date(dob);
-            deathDate.setFullYear(dob.getFullYear() + TARGET_AGE);
+    const totalWeeks = years * WEEKS_PER_YEAR;
 
-            const oneWeek = 1000 * 60 * 60 * 24 * 7;
-            const totalLifeTime = deathDate - dob;
-            const timeLived = today - dob;
+    if (!bday || isNaN(bday.getTime())) {
+      els.grid.innerHTML = "";
+      buildEmptyGrid(totalWeeks);
+      els.foot.textContent = "Enter your birthday to begin.";
+      ["age", "lived", "left", "pct"].forEach((k) => (els[k].textContent = "—"));
+      els.barFill.style.width = "0%";
+      els.barPct.textContent = "0%";
+      return;
+    }
 
-            const totalWeeks = Math.floor(totalLifeTime / oneWeek);
-            const weeksLived = Math.floor(timeLived / oneWeek);
-            
-            const percentage = ((weeksLived / totalWeeks) * 100).toFixed(2);
+    const now = new Date();
+    const weeksLived = Math.max(0, Math.floor((now - bday) / MS_PER_WEEK));
+    const livedClamped = Math.min(weeksLived, totalWeeks);
+    const remaining = Math.max(0, totalWeeks - weeksLived);
+    const pct = ((livedClamped / totalWeeks) * 100);
 
-            subtitle.innerHTML = `<p>${dob.toDateString()} — ${deathDate.toDateString()}</p>`;
+    // age
+    let age = now.getFullYear() - bday.getFullYear();
+    const m = now.getMonth() - bday.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < bday.getDate())) age--;
 
-            gridContainer.innerHTML = '';
-            
-            const fragment = document.createDocumentFragment();
+    els.age.textContent = age >= 0 ? age : "—";
+    els.lived.textContent = fmt(weeksLived);
+    els.left.textContent = fmt(remaining);
+    els.pct.textContent = pct.toFixed(1) + "%";
+    els.barFill.style.width = Math.min(100, pct) + "%";
+    els.barPct.textContent = pct.toFixed(1) + "%";
 
-            for (let i = 0; i < totalWeeks; i++) {
-                const box = document.createElement('div');
-                box.className = 'week-box';
+    buildGrid(totalWeeks, weeksLived);
 
-                if (i < weeksLived) {
-                    box.classList.add('filled');
-                } else if (i === weeksLived) {
-                    box.classList.add('current');
-                }
-                
-                fragment.appendChild(box);
-            }
-            gridContainer.appendChild(fragment);
+    els.foot.innerHTML =
+      `<b>${fmt(weeksLived)}</b> weeks lived &nbsp;·&nbsp; ` +
+      `<b>${fmt(remaining)}</b> weeks remaining of <b>${fmt(totalWeeks)}</b> ` +
+      `(${years} years)`;
 
-            statsDisplay.innerHTML = `
-                ${weeksLived.toLocaleString()} weeks lived<br>
-                ${(totalWeeks - weeksLived).toLocaleString()} weeks remaining<br>
-                ${percentage}% complete
-            `;
-        }
+    els.subtitle.textContent =
+      remaining > 0
+        ? `You have roughly ${fmt(remaining)} weeks left. Make them count.`
+        : `You've lived a full ${years} years on this map.`;
+  }
 
-        function markWeekDone() {
-            alert("Week marked complete.");
-            location.reload(); 
-        }
-    </script>
+  function buildEmptyGrid(totalWeeks) {
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < totalWeeks; i++) {
+      const c = document.createElement("div");
+      c.className = "cell";
+      if (i % (WEEKS_PER_YEAR * 10) === 0 && i !== 0) c.classList.add("decade");
+      frag.appendChild(c);
+    }
+    els.grid.innerHTML = "";
+    els.grid.appendChild(frag);
+  }
+
+  function buildGrid(totalWeeks, weeksLived) {
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < totalWeeks; i++) {
+      const c = document.createElement("div");
+      c.className = "cell";
+      if (i < weeksLived) c.classList.add("lived");
+      else if (i === weeksLived) c.classList.add("current");
+      if (i % (WEEKS_PER_YEAR * 10) === 0 && i !== 0) c.classList.add("decade");
+      frag.appendChild(c);
+    }
+    els.grid.innerHTML = "";
+    els.grid.appendChild(frag);
+  }
+
+  function onChange() {
+    save();
+    render();
+  }
+
+  els.birthday.addEventListener("change", onChange);
+  els.lifespan.addEventListener("input", onChange);
+
+  load();
+  render();
+})();
+</script>
 </body>
 </html>
