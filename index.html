@@ -36,13 +36,20 @@
   .wrap {
     max-width: 1180px;
     margin: 0 auto;
-    padding: 28px 24px 40px;
+    padding: 18px 22px;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
   }
 
   /* ---------- Header ---------- */
   header.title {
     text-align: center;
-    margin-bottom: 22px;
+    margin-bottom: 12px;
+    flex: 0 0 auto;
   }
   header.title h1 {
     font-family: var(--font-mono);
@@ -69,8 +76,9 @@
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 16px 18px;
-    margin-bottom: 22px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    flex: 0 0 auto;
   }
   .field {
     display: flex;
@@ -98,18 +106,130 @@
   .field input:focus { border-color: var(--accent); }
   .field input[type="number"] { width: 92px; }
 
+  /* ---------- Eras editor ---------- */
+  .eras {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 22px;
+  }
+  .eras-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .eras-head h2 {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin: 0;
+    font-weight: 600;
+  }
+  .eras-head .hint {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+  }
+  .era-row {
+    display: grid;
+    grid-template-columns: 34px minmax(120px, 1.4fr) minmax(90px, 1fr) minmax(90px, 1fr) 34px;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .era-row input[type="color"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: none;
+    cursor: pointer;
+  }
+  .era-row input[type="color"]::-webkit-color-swatch-wrapper { padding: 3px; }
+  .era-row input[type="color"]::-webkit-color-swatch { border: none; border-radius: 5px; }
+  .era-row input[type="text"] {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: var(--font-sans);
+    outline: none;
+    min-width: 0;
+    transition: border-color .15s ease;
+  }
+  .era-row input[type="text"]:focus { border-color: var(--accent); }
+  .era-row .del {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 8px;
+    height: 34px;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .era-row .del:hover { color: var(--current); border-color: var(--current); }
+  .era-cols {
+    display: grid;
+    grid-template-columns: 34px minmax(120px, 1.4fr) minmax(90px, 1fr) minmax(90px, 1fr) 34px;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .era-cols span {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .add-era {
+    margin-top: 6px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 9px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: border-color .15s ease;
+  }
+  .add-era:hover { border-color: var(--accent); }
+  @media (max-width: 640px) {
+    .era-cols { display: none; }
+    .era-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .era-row input[type="text"] { flex: 1 1 40%; }
+  }
+
   /* ---------- Stats ---------- */
   .stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
-    margin-bottom: 26px;
+    margin-bottom: 12px;
+    flex: 0 0 auto;
   }
   .stat {
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 16px 18px;
+    padding: 12px 16px;
   }
   .stat .num {
     font-family: var(--font-mono);
@@ -131,7 +251,8 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 26px;
+    margin-bottom: 12px;
+    flex: 0 0 auto;
   }
   .bar {
     flex: 1;
@@ -160,13 +281,20 @@
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 22px 22px 18px;
+    padding: 16px 18px 12px;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
   }
   .grid-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+    flex: 0 0 auto;
+    gap: 12px;
+    flex-wrap: wrap;
   }
   .grid-head .cap {
     font-family: var(--font-mono);
@@ -195,53 +323,84 @@
   .dot-lived { background: var(--lived); }
   .dot-current { background: var(--current); }
   .dot-future { background: var(--future); border: 1px solid var(--border); }
+  #legend-eras { display: contents; }
 
   /* The actual weeks grid */
+  .grid-area {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
   .grid {
     display: grid;
-    grid-template-columns: repeat(52, 1fr);
-    gap: 3px;
-    width: 100%;
+    grid-template-columns: repeat(52, var(--cell, 12px));
+    grid-auto-rows: var(--cell, 12px);
+    gap: var(--gap, 2px);
+    margin: auto;
   }
   .cell {
-    aspect-ratio: 1 / 1;
     border-radius: 2px;
     background: var(--future);
     transition: transform .08s ease;
   }
   .cell.lived { background: var(--lived); }
+  .cell.future-era { opacity: 0.42; }
+  .cell.has-era { cursor: help; }
   .cell.current {
     background: var(--current);
-    box-shadow: 0 0 0 2px rgba(255,77,77,.35);
+    box-shadow: 0 0 0 1.5px var(--panel), 0 0 0 3px var(--current);
+    position: relative;
+    z-index: 2;
     animation: pulse 1.8s ease-in-out infinite;
   }
   .cell.decade { box-shadow: inset 0 0 0 1px var(--year-line); }
   @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.35); opacity: .75; }
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.25); }
   }
 
   .grid-foot {
-    margin-top: 16px;
+    margin-top: 10px;
     text-align: center;
     font-family: var(--font-mono);
     font-size: 12px;
     color: var(--muted);
-    line-height: 1.7;
+    line-height: 1.6;
+    flex: 0 0 auto;
   }
   .grid-foot b { color: var(--text); font-weight: 600; }
 
-  .axis-note {
-    margin-top: 4px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 10.5px;
-    letter-spacing: 0.06em;
+  /* ---------- Below-the-fold eras ---------- */
+  .eras-wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 22px 40px;
   }
+  .eras-toggle {
+    display: block;
+    width: 100%;
+    margin: 14px 0 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: var(--radius);
+    padding: 11px 16px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color .15s ease, color .15s ease;
+  }
+  .eras-toggle:hover { border-color: var(--accent); color: var(--text); }
+  .eras { margin: 14px 0 0; }
+  .eras[hidden] { display: none; }
 
   @media (max-width: 640px) {
     .stats { grid-template-columns: repeat(2, 1fr); }
-    .grid { gap: 2px; }
   }
 </style>
 </head>
@@ -290,15 +449,32 @@
     <section class="grid-shell">
       <div class="grid-head">
         <span class="cap">1 row = 1 year · 1 square = 1 week</span>
-        <div class="legend">
+        <div class="legend" id="legend">
+          <span id="legend-eras"></span>
           <span><i class="dot-lived"></i>Lived</span>
           <span><i class="dot-current"></i>This week</span>
           <span><i class="dot-future"></i>Remaining</span>
         </div>
       </div>
-      <div class="grid" id="grid" role="img" aria-label="Weeks of life grid"></div>
-      <div class="axis-note">← 52 weeks per year →</div>
+      <div class="grid-area">
+        <div class="grid" id="grid" role="img" aria-label="Weeks of life grid"></div>
+      </div>
       <div class="grid-foot" id="foot">Enter your birthday to begin.</div>
+    </section>
+  </div>
+
+  <div class="eras-wrap">
+    <button type="button" class="eras-toggle" id="eras-toggle" aria-expanded="false">+ Edit life eras</button>
+    <section class="eras" id="eras" hidden>
+      <div class="eras-head">
+        <h2>Life Eras</h2>
+        <span class="hint">Start / end accept an age (e.g. 18) or a date (e.g. 2020-08) · use "now" for ongoing · later rows win on overlap</span>
+      </div>
+      <div class="era-cols">
+        <span>Color</span><span>Label</span><span>Start</span><span>End</span><span></span>
+      </div>
+      <div id="era-list"></div>
+      <button type="button" class="add-era" id="add-era">+ Add era</button>
     </section>
   </div>
 
@@ -307,6 +483,13 @@
   const WEEKS_PER_YEAR = 52;
   const MS_PER_WEEK = 1000 * 60 * 60 * 24 * 7;
   const STORE_KEY = "mementoMori.v1";
+  const PALETTE = ["#f5c542", "#caa9f0", "#5ab0ff", "#5fd6a4", "#ff8c5a", "#ff6f91", "#7ee3e3", "#b8c25a"];
+
+  const DEFAULT_ERAS = [
+    { label: "Childhood & school", color: "#f5c542", start: "0", end: "18" },
+    { label: "Vanderbilt", color: "#caa9f0", start: "2020-08", end: "2023-08" },
+    { label: "Med school", color: "#5ab0ff", start: "2023-08", end: "now" },
+  ];
 
   const els = {
     birthday: document.getElementById("birthday"),
@@ -320,36 +503,107 @@
     barPct: document.getElementById("bar-pct"),
     foot: document.getElementById("foot"),
     subtitle: document.getElementById("subtitle"),
+    eraList: document.getElementById("era-list"),
+    addEra: document.getElementById("add-era"),
+    legendEras: document.getElementById("legend-eras"),
+    gridArea: document.querySelector(".grid-area"),
+    eras: document.getElementById("eras"),
+    erasToggle: document.getElementById("eras-toggle"),
   };
 
+  let eras = [];
+  let currentRows = 80;
+
   const fmt = (n) => n.toLocaleString("en-US");
+  const uid = () => "e" + Math.random().toString(36).slice(2, 9);
+  const escapeAttr = (s) =>
+    String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const escapeHtml = (s) =>
+    String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   function load() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
       if (saved.birthday) els.birthday.value = saved.birthday;
       if (saved.lifespan) els.lifespan.value = saved.lifespan;
-    } catch (_) {}
+      if (Array.isArray(saved.eras)) {
+        eras = saved.eras.map((e) => ({
+          id: e.id || uid(),
+          label: e.label || "",
+          color: e.color || "#cccccc",
+          start: e.start || "",
+          end: e.end || "",
+        }));
+      } else {
+        eras = DEFAULT_ERAS.map((e) => ({ id: uid(), ...e }));
+      }
+      setErasOpen(!!saved.erasOpen, false);
+    } catch (_) {
+      eras = DEFAULT_ERAS.map((e) => ({ id: uid(), ...e }));
+    }
   }
 
   function save() {
     localStorage.setItem(STORE_KEY, JSON.stringify({
       birthday: els.birthday.value,
       lifespan: els.lifespan.value,
+      eras: eras,
+      erasOpen: els.eras.hidden === false,
     }));
   }
 
+  // ---------- Boundary parsing ----------
+  function parseDateish(s) {
+    let m = s.match(/^(\d{4})-(\d{1,2})$/);
+    if (m) return new Date(+m[1], +m[2] - 1, 1);
+    m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+    const d = new Date(s);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function boundaryToWeek(raw, bday) {
+    if (raw == null) return null;
+    const s = String(raw).trim().toLowerCase();
+    if (s === "" || s === "now" || s === "present" || s === "today") {
+      return Math.max(0, Math.floor((new Date() - bday) / MS_PER_WEEK));
+    }
+    if (/^\d+(\.\d+)?$/.test(s)) {
+      return Math.round(parseFloat(s) * WEEKS_PER_YEAR);
+    }
+    const d = parseDateish(s);
+    if (d) return Math.floor((d - bday) / MS_PER_WEEK);
+    return null;
+  }
+
+  function resolveEras(bday, totalWeeks) {
+    const out = [];
+    for (const e of eras) {
+      const a = boundaryToWeek(e.start, bday);
+      const b = boundaryToWeek(e.end, bday);
+      if (a == null || b == null) continue;
+      const start = Math.max(0, a);
+      const end = Math.min(totalWeeks, b);
+      if (end <= start) continue;
+      out.push({ label: e.label, color: e.color, start, end });
+    }
+    return out;
+  }
+
+  // ---------- Render ----------
   function render() {
     const bday = els.birthday.value ? new Date(els.birthday.value + "T00:00:00") : null;
     let years = parseInt(els.lifespan.value, 10);
     if (isNaN(years) || years < 1) years = 80;
 
     const totalWeeks = years * WEEKS_PER_YEAR;
+    currentRows = years;
 
     if (!bday || isNaN(bday.getTime())) {
-      els.grid.innerHTML = "";
       buildEmptyGrid(totalWeeks);
+      layoutGrid(currentRows);
       els.foot.textContent = "Enter your birthday to begin.";
+      els.legendEras.innerHTML = "";
       ["age", "lived", "left", "pct"].forEach((k) => (els[k].textContent = "—"));
       els.barFill.style.width = "0%";
       els.barPct.textContent = "0%";
@@ -362,7 +616,6 @@
     const remaining = Math.max(0, totalWeeks - weeksLived);
     const pct = ((livedClamped / totalWeeks) * 100);
 
-    // age
     let age = now.getFullYear() - bday.getFullYear();
     const m = now.getMonth() - bday.getMonth();
     if (m < 0 || (m === 0 && now.getDate() < bday.getDate())) age--;
@@ -374,7 +627,10 @@
     els.barFill.style.width = Math.min(100, pct) + "%";
     els.barPct.textContent = pct.toFixed(1) + "%";
 
-    buildGrid(totalWeeks, weeksLived);
+    const resolved = resolveEras(bday, totalWeeks);
+    buildGrid(totalWeeks, weeksLived, bday, resolved);
+    layoutGrid(currentRows);
+    renderLegend(resolved);
 
     els.foot.innerHTML =
       `<b>${fmt(weeksLived)}</b> weeks lived &nbsp;·&nbsp; ` +
@@ -399,29 +655,147 @@
     els.grid.appendChild(frag);
   }
 
-  function buildGrid(totalWeeks, weeksLived) {
+  function buildGrid(totalWeeks, weeksLived, bday, resolved) {
+    // Map each week -> era (later eras win on overlap).
+    const cellColor = new Array(totalWeeks).fill(null);
+    const cellLabel = new Array(totalWeeks).fill(null);
+    for (const r of resolved) {
+      for (let i = r.start; i < r.end; i++) {
+        cellColor[i] = r.color;
+        cellLabel[i] = r.label;
+      }
+    }
+
     const frag = document.createDocumentFragment();
     for (let i = 0; i < totalWeeks; i++) {
       const c = document.createElement("div");
       c.className = "cell";
-      if (i < weeksLived) c.classList.add("lived");
-      else if (i === weeksLived) c.classList.add("current");
+      const color = cellColor[i];
+
+      if (color) {
+        c.classList.add("has-era");
+        c.style.background = color;
+        if (i >= weeksLived) c.classList.add("future-era");
+      } else {
+        if (i < weeksLived) c.classList.add("lived");
+      }
+      if (i === weeksLived) c.classList.add("current");
       if (i % (WEEKS_PER_YEAR * 10) === 0 && i !== 0) c.classList.add("decade");
+
+      const d = new Date(bday.getTime() + i * MS_PER_WEEK);
+      const ageYears = Math.floor(i / WEEKS_PER_YEAR);
+      const dateStr = d.toLocaleDateString("en-US", { year: "numeric", month: "short" });
+      c.title = `Age ${ageYears} · ${dateStr}` + (cellLabel[i] ? ` · ${cellLabel[i]}` : "");
+
       frag.appendChild(c);
     }
     els.grid.innerHTML = "";
     els.grid.appendChild(frag);
   }
 
+  function renderLegend(resolved) {
+    els.legendEras.innerHTML = resolved
+      .map((r) => `<span><i style="background:${escapeAttr(r.color)}"></i>${escapeHtml(r.label || "Era")}</span>`)
+      .join("");
+  }
+
+  // ---------- Fit grid to the available space ----------
+  function layoutGrid(rows) {
+    const area = els.gridArea;
+    if (!area || rows < 1) return;
+    const cols = WEEKS_PER_YEAR;
+    const W = area.clientWidth;
+    const H = area.clientHeight;
+    if (W <= 0 || H <= 0) return;
+    const gap = 2;
+    const byW = (W - (cols - 1) * gap) / cols;
+    const byH = (H - (rows - 1) * gap) / rows;
+    let cell = Math.min(byW, byH);
+    if (cell < 1) cell = 1;
+    // Round down a touch to avoid sub-pixel overflow.
+    cell = Math.floor(cell * 100) / 100;
+    els.grid.style.setProperty("--gap", gap + "px");
+    els.grid.style.setProperty("--cell", cell + "px");
+  }
+
+  // ---------- Eras editor ----------
+  function renderEditor() {
+    els.eraList.innerHTML = eras
+      .map(
+        (e) => `
+      <div class="era-row" data-id="${e.id}">
+        <input type="color" value="${/^#[0-9a-f]{6}$/i.test(e.color) ? e.color : "#cccccc"}" aria-label="Era color">
+        <input type="text" class="era-label" placeholder="Label" value="${escapeAttr(e.label || "")}">
+        <input type="text" class="era-start" placeholder="age or date" value="${escapeAttr(e.start || "")}">
+        <input type="text" class="era-end" placeholder="now" value="${escapeAttr(e.end || "")}">
+        <button type="button" class="del" title="Delete era" aria-label="Delete era">&times;</button>
+      </div>`
+      )
+      .join("");
+  }
+
+  els.eraList.addEventListener("input", (e) => {
+    const row = e.target.closest(".era-row");
+    if (!row) return;
+    const era = eras.find((x) => x.id === row.dataset.id);
+    if (!era) return;
+    if (e.target.matches('input[type="color"]')) era.color = e.target.value;
+    else if (e.target.classList.contains("era-label")) era.label = e.target.value;
+    else if (e.target.classList.contains("era-start")) era.start = e.target.value;
+    else if (e.target.classList.contains("era-end")) era.end = e.target.value;
+    save();
+    render();
+  });
+
+  els.eraList.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("del")) return;
+    const row = e.target.closest(".era-row");
+    eras = eras.filter((x) => x.id !== row.dataset.id);
+    save();
+    renderEditor();
+    render();
+  });
+
+  els.addEra.addEventListener("click", () => {
+    const color = PALETTE[eras.length % PALETTE.length];
+    eras.push({ id: uid(), label: "New era", color: color, start: "", end: "now" });
+    save();
+    renderEditor();
+    render();
+  });
+
   function onChange() {
     save();
     render();
   }
 
+  // ---------- Eras show/hide ----------
+  function setErasOpen(open, doScroll) {
+    els.eras.hidden = !open;
+    els.erasToggle.setAttribute("aria-expanded", String(open));
+    els.erasToggle.textContent = open ? "− Hide life eras" : "+ Edit life eras";
+    if (open && doScroll) {
+      els.eras.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  els.erasToggle.addEventListener("click", () => {
+    const open = els.eras.hidden; // currently hidden -> we are opening
+    setErasOpen(open, open);
+    save();
+  });
+
   els.birthday.addEventListener("change", onChange);
   els.lifespan.addEventListener("input", onChange);
 
+  let resizeRAF = null;
+  window.addEventListener("resize", () => {
+    if (resizeRAF) cancelAnimationFrame(resizeRAF);
+    resizeRAF = requestAnimationFrame(() => layoutGrid(currentRows));
+  });
+
   load();
+  renderEditor();
   render();
 })();
 </script>

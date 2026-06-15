@@ -13,6 +13,11 @@ and **1 square = 1 week**.
   the week you're in now pulses red, and remaining weeks stay dim.
 - **Live stats** — current age, weeks lived, weeks remaining, and percent of life completed,
   plus a progress bar.
+- **Color-coded life eras** — define phases of your life (e.g. school, college, a job) with a
+  label and color. Each era's start/end accepts either an **age** (`18`) or a **date** (`2020-08`),
+  and `now` marks an ongoing era. Lived weeks show the era color at full strength; future weeks in
+  a planned era are faded so "lived vs remaining" stays clear. The legend builds itself from your
+  eras, and hovering any square shows its date, age, and era.
 - **Decade markers** — a subtle outline every 10 years for orientation.
 - **Remembers you** — your birthday and lifespan are saved in the browser (`localStorage`),
   so it's there next time.
