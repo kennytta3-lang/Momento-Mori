@@ -298,9 +298,10 @@
   }
   .grid-head .cap {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 9.5px;
     color: var(--muted);
-    letter-spacing: 0.08em;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
   }
   .legend {
     display: flex;
@@ -330,16 +331,19 @@
     flex: 1 1 auto;
     min-height: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
+  .grid-area::-webkit-scrollbar { width: 8px; }
+  .grid-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
   .grid {
     display: grid;
     grid-template-columns: repeat(52, var(--cell, 12px));
     grid-auto-rows: var(--cell, 12px);
     gap: var(--gap, 2px);
-    margin: auto;
+    margin: 0 auto;
   }
   .cell {
     border-radius: 2px;
@@ -699,19 +703,18 @@
       .join("");
   }
 
-  // ---------- Fit grid to the available space ----------
+  // ---------- Fit grid to the available width ----------
   function layoutGrid(rows) {
     const area = els.gridArea;
     if (!area || rows < 1) return;
     const cols = WEEKS_PER_YEAR;
     const W = area.clientWidth;
-    const H = area.clientHeight;
-    if (W <= 0 || H <= 0) return;
+    if (W <= 0) return;
     const gap = 2;
-    const byW = (W - (cols - 1) * gap) / cols;
-    const byH = (H - (rows - 1) * gap) / rows;
-    let cell = Math.min(byW, byH);
+    // Fill the full width: derive the square size from the available width.
+    let cell = (W - (cols - 1) * gap) / cols;
     if (cell < 1) cell = 1;
+    if (cell > 30) cell = 30; // avoid absurdly large squares on very wide embeds
     // Round down a touch to avoid sub-pixel overflow.
     cell = Math.floor(cell * 100) / 100;
     els.grid.style.setProperty("--gap", gap + "px");
